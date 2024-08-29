@@ -2,14 +2,13 @@ sap.ui.define([
     "./BaseController",
     "sap/ui/model/json/JSONModel",
     "../model/formatter",
-    "../model/constants",
     "sap/ui/model/Filter",
     "sap/ui/model/FilterOperator",
     "sap/ui/core/BusyIndicator",
     "sap/m/MessageToast",
     "sap/m/MessageBox",
     "sap/ui/core/Fragment"
-], function (BaseController, JSONModel, formatter, constants, Filter, FilterOperator, BusyIndicator, MessageToast, MessageBox, Fragment) {
+], function (BaseController, JSONModel, formatter, Filter, FilterOperator, BusyIndicator, MessageToast, MessageBox, Fragment) {
     "use strict";
 
     return BaseController.extend("com.mbp.zuxcobmaterial.controller.Worklist", {
@@ -82,12 +81,20 @@ sap.ui.define([
 
 			var mBindingParams = oEvent.getParameter("bindingParams");
             var sSelectedNoMov = this.byId("ID_FILTER_NO_NULL_MOVIMENT").getSelected();
+            var oFilters = [];
 
             if(!!sSelectedNoMov){
-                constants.FILTER_MOVIMENT.forEach(function(oItem) {
-                    var newFilter = new sap.ui.model.Filter(oItem.id, sap.ui.model.FilterOperator.NE, '0.000' );
-                    mBindingParams.filters.push(newFilter);  
-                }, this); 
+                oFilters.push(new sap.ui.model.Filter({ filters:[ new sap.ui.model.Filter("ConsumoTotal", sap.ui.model.FilterOperator.NE, '0.000'),
+                                                                  new sap.ui.model.Filter("ConsumoMensal", sap.ui.model.FilterOperator.NE, '0.000'),
+                                                                  new sap.ui.model.Filter("ConsumoMesAnoAnt", sap.ui.model.FilterOperator.NE, '0.000'),
+                                                                  new sap.ui.model.Filter("ReorderThresholdQuantity", sap.ui.model.FilterOperator.NE, '0.000'),
+                                                                  new sap.ui.model.Filter("StockAtual", sap.ui.model.FilterOperator.NE, '0.000'),
+                                                                  new sap.ui.model.Filter("OvPepNecessidade", sap.ui.model.FilterOperator.NE, '0.000'),
+                                                                  new sap.ui.model.Filter("OvPep", sap.ui.model.FilterOperator.NE, '0.000'),
+                                                                  new sap.ui.model.Filter("MinimumLotSizeQuantity", sap.ui.model.FilterOperator.NE, '0.000'),
+                                                                  new sap.ui.model.Filter("SafetyStockQuantity", sap.ui.model.FilterOperator.NE, '0.000')], and: false }));
+                var newFilter = new sap.ui.model.Filter({filters: oFilters, and: false});
+                mBindingParams.filters.push(newFilter);  
             }         
             
         },
