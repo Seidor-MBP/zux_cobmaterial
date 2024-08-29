@@ -1,0 +1,51 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:ui="sap.ui.table"
+	xmlns:smartTable="sap.ui.comp.smarttable">
+
+  <Dialog
+  		title="{i18n>dialog_title2}"
+	    type="Message"
+		state="Information"
+        contentWidth='80%'
+		contentHeight='80%'
+		horizontalScrolling="false"
+		verticalScrolling="false"
+        stretchOnPhone="true">
+	    
+    	<content>  
+			<smartTable:SmartTable id="listReservado"
+									entitySet="ZC_RESERVADO" 
+									tableType="Table" 
+									enableAutoBinding="true"
+									header="{i18n>table_title1}" 
+                                    useVariantManagement="false"
+                                    showFullScreenButton="true"
+									showTablePersonalisation="false"
+                                    beforeRebindTable="onBeforeRebindTableMaterialPlant"
+									class="sapUiResponsiveContentPadding">    
+
+				<ui:Table visibleRowCountMode="Auto">				
+				</ui:Table> 
+
+                <smartTable:customData>
+					<core:CustomData key="dateFormatSettings" value='\{"pattern": "dd/MM/yyyy" \}'/>
+				</smartTable:customData>   	
+
+				<smartTable:layoutData>
+					<FlexItemData growFactor="1" baseSize="0%"/>
+				</smartTable:layoutData>	
+			</smartTable:SmartTable>
+   	 	</content>
+
+	    <buttons>
+			<Button 
+					text="{i18n>button_close}" 
+					type="Reject" 
+					icon="sap-icon://sys-cancel" 
+					press="onHandleCloseDialogDetail" />
+    	</buttons>
+	</Dialog>
+
+</core:FragmentDefinition>

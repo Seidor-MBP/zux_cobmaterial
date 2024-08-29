@@ -1,0 +1,175 @@
+<mvc:View
+    controllerName="com.mbp.zuxcobmaterial.controller.Worklist"
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:semantic="sap.f.semantic"
+    xmlns:core="sap.ui.core"
+    xmlns:ui="sap.ui.table"
+    xmlns:smartFilterBar="sap.ui.comp.smartfilterbar"
+	xmlns:smartTable="sap.ui.comp.smarttable">
+
+    <semantic:SemanticPage
+        id="page"
+        headerPinnable="false"
+        toggleHeaderOnTitleClick="false"
+        showFooter="{worklistView>/visibleFooter}">
+
+        <semantic:titleHeading>
+            <Title
+                text="{i18n>worklistTitle}"
+                level="H2"/>
+        </semantic:titleHeading>
+
+        <semantic:headerContent>
+                <smartFilterBar:SmartFilterBar id="smartFilterBarMateriais" 
+                                                entitySet="ZC_COB_MATERIAL"
+                                                initialized="onInitSmartFilterBar"
+                                                showFilterConfiguration="false">
+
+				   <smartFilterBar:controlConfiguration>
+				   			<smartFilterBar:ControlConfiguration
+									key="ZNoNullMoviment" 
+									label="{i18n>desc_null_mov}"
+									visibleInAdvancedArea="true">
+									<smartFilterBar:customControl>
+										<CheckBox id="ID_FILTER_NO_NULL_MOVIMENT"/>
+									</smartFilterBar:customControl>
+							 </smartFilterBar:ControlConfiguration>
+					</smartFilterBar:controlConfiguration>
+
+                    <smartFilterBar:layoutData>
+                        <FlexItemData shrinkFactor="0"/>
+                    </smartFilterBar:layoutData>
+                </smartFilterBar:SmartFilterBar>
+        </semantic:headerContent>        
+
+        <semantic:content>
+			<smartTable:SmartTable id="listMaterial"
+									entitySet="ZC_COB_MATERIAL" 
+									smartFilterId="smartFilterBarMateriais"
+									tableType="Table" 
+									header="{i18n>table_title1}" 
+									placeToolbarInTable="true"
+                                    useVariantManagement="false"
+                                    showFullScreenButton="true"
+                                    requestAtLeastFields="Product,Plant"
+                                    beforeRebindTable="onBeforeRebindTable"
+									class="sapUiResponsiveContentPadding">
+                
+                
+				<smartTable:customToolbar>
+					<OverflowToolbar design="Transparent">
+						<ToolbarSpacer/>
+						
+						<Button id="ID_BUTTON_CREATE_REQ"
+                                text="{i18n>button_label1}"
+                                type="Transparent"
+                                icon="sap-icon://request"
+                                press="onHandlePressTableAction"/>                       
+                                                           			   
+					</OverflowToolbar>
+				</smartTable:customToolbar>                
+                
+
+               <ui:Table visibleRowCountMode="Auto">
+                    <ui:columns> 
+                        <ui:Column id="ConsumoMensalColumn" hAlign="End" width="10rem">
+                            <ui:customData>
+                                <core:CustomData key="p13nData"
+                                                 value='\{"columnKey": "ConsumoMensal", "filterProperty": "ConsumoMensal", "sortProperty": "ConsumoMensal", "autoColumnWidth": \{ "visibleProperty": "ConsumoMensal" }, "columnIndex": 11, "leadingProperty": "ConsumoMensal,MaterialUnitConsumoMensal"}' />
+                            </ui:customData>
+                            <Text text="{/#ZC_COB_MATERIALType/ConsumoMensal/@sap:label}"/>
+                            <ui:template>
+                                <Link id="ConsumoMensalLink" 
+                                      text="{ parts: ['ConsumoMensal', 'MaterialUnitConsumoMensal'], formatter: '.formatter.formatQuantStock'}"
+                                      press="onLinkPressed"/>
+                            </ui:template>
+                        </ui:Column> 
+
+                        <ui:Column id="ConsumoAnoAntColumn" hAlign="End" width="10rem">
+                            <ui:customData>
+                                <core:CustomData key="p13nData"
+                                                 value='\{"columnKey": "ConsumoMesAnoAnt",  "filterProperty": "ConsumoMesAnoAnt", "sortProperty": "ConsumoMesAnoAnt", "autoColumnWidth": \{ "visibleProperty": "ConsumoMesAnoAnt" }, "columnIndex": 11, "leadingProperty": "ConsumoMesAnoAnt,MaterialUnitConsumoMesAnoAnt"}' />
+                            </ui:customData>
+                            <Text text="{/#ZC_COB_MATERIALType/ConsumoMesAnoAnt/@sap:label}"/>
+                            <ui:template>
+                                <Link id="ConsumoAnoAntLink" text="{ parts: ['ConsumoMesAnoAnt', 'MaterialUnitConsumoMesAnoAnt'], formatter: '.formatter.formatQuantStock'}" press="onLinkPressed"/>
+                            </ui:template>
+                        </ui:Column>  
+
+                        <ui:Column id="StockAtualColumn" hAlign="End" width="10rem">
+                            <ui:customData>
+                                <core:CustomData key="p13nData"
+                                                 value='\{"columnKey": "StockAtual", "filterProperty": "StockAtual", "sortProperty": "StockAtual", "autoColumnWidth": \{ "visibleProperty": "StockAtual" }, "columnIndex": 14, "leadingProperty": "StockAtual,MaterialBaseUnitStockAtual"}' />
+                            </ui:customData>
+                            <Text text="{/#ZC_COB_MATERIALType/StockAtual/@sap:label}"/>
+                            <ui:template>
+                                <Link id="StockAtualLink" text="{ parts: ['StockAtual', 'MaterialBaseUnitStockAtual'], formatter: '.formatter.formatQuantStock'}" press="onLinkPressed"/>
+                            </ui:template>
+                        </ui:Column>  
+
+                        <ui:Column id="OvPepNecColumn" hAlign="End" width="10rem">
+                            <ui:customData>
+                                <core:CustomData key="p13nData"
+                                                 value='\{"columnKey": "OvPepNecessidade", "filterProperty": "OvPepNecessidade", "sortProperty": "OvPepNecessidade", "autoColumnWidth": \{ "visibleProperty": "OvPepNecessidade" }, "columnIndex": 15, "leadingProperty": "OvPepNecessidade,MaterialUnitOvPepNecessidade"}' />
+                            </ui:customData>
+                            <Text text="{/#ZC_COB_MATERIALType/OvPepNecessidade/@sap:label}"/>
+                            <ui:template>
+                                <Link id="OvPepNecLink" text="{ parts: ['OvPepNecessidade', 'MaterialUnitOvPepNecessidade'], formatter: '.formatter.formatQuantStock'}" press="onLinkPressed"/>
+                            </ui:template>
+                        </ui:Column> 
+
+                        <ui:Column id="OvPepEmpColumn" hAlign="End" width="10rem">
+                            <ui:customData>
+                                <core:CustomData key="p13nData"
+                                                 value='\{"columnKey": "OvPep", "filterProperty": "OvPep", "sortProperty": "OvPep", "autoColumnWidth": \{ "visibleProperty": "OvPep" }, "columnIndex": 16, "leadingProperty": "OvPep,MaterialBaseUnitOvPep"}' />
+                            </ui:customData>
+                            <Text text="{/#ZC_COB_MATERIALType/OvPep/@sap:label}"/>
+                            <ui:template>
+                                <Link id="OvPepEmpLink" text="{ parts: ['OvPep', 'MaterialBaseUnitOvPep'], formatter: '.formatter.formatQuantStock'}" press="onLinkPressed"/>
+                            </ui:template>
+                        </ui:Column>                         
+
+                        <ui:Column id="RequisicaoColumn" hAlign="End" width="10rem">
+                            <ui:customData>
+                                <core:CustomData key="p13nData"
+                                                 value='\{"columnKey": "ReqCompras", "filterProperty": "ReqCompras", "sortProperty": "ReqCompras", "autoColumnWidth": \{ "visibleProperty": "ReqCompras" }, "columnIndex": 21, "leadingProperty": "ReqCompras,MaterialBaseUnitReqCompras"}' />
+                            </ui:customData>
+                            <Text text="{/#ZC_COB_MATERIALType/ReqCompras/@sap:label}"/>
+                            <ui:template>
+                                <Link id="RequisicaoLink" text="{ parts: ['ReqCompras', 'MaterialBaseUnitReqCompras'], formatter: '.formatter.formatQuantStock'}" press="onLinkPressed"/>
+                            </ui:template>
+                        </ui:Column>    
+
+                        <ui:Column id="PedidoColumn" hAlign="End" width="10rem">
+                            <ui:customData>
+                                <core:CustomData key="p13nData"
+                                                 value='\{"columnKey": "PedCompras", "filterProperty": "PedCompras", "sortProperty": "PedCompras", "autoColumnWidth": \{ "visibleProperty": "PedCompras" }, "columnIndex": 22, "leadingProperty": "PedCompras,MaterialBaseUnitPedCompras"}' />
+                            </ui:customData>
+                            <Text text="{/#ZC_COB_MATERIALType/PedCompras/@sap:label}"/>
+                            <ui:template>
+                                <Link id="PedidoLink" text="{ parts: ['PedCompras', 'MaterialBaseUnitPedCompras'], formatter: '.formatter.formatQuantStock'}" press="onLinkPressed"/>
+                            </ui:template>
+                        </ui:Column>                                                                                             
+                    </ui:columns> 
+                    
+                </ui:Table>  
+
+
+                <smartTable:customData>
+					<core:CustomData key="dateFormatSettings" value='\{"pattern": "dd/MM/yyyy" \}'/>
+				</smartTable:customData>   	
+
+				<smartTable:layoutData>
+					<FlexItemData growFactor="1" baseSize="0%"/>
+				</smartTable:layoutData>	
+			</smartTable:SmartTable>
+        </semantic:content>
+
+		<semantic:messagesIndicator>
+			<semantic:MessagesIndicator press="onMessagePopoverPress"/>
+		</semantic:messagesIndicator>
+
+    </semantic:SemanticPage>
+
+</mvc:View>
