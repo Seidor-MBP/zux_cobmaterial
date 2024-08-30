@@ -124,6 +124,8 @@ sap.ui.define([
                     this._dialogDetail = sap.ui.xmlfragment(oView.getId(),"com.mbp.zuxcobmaterial.view.fragments.DialogOvPep", this);
                 }else if(oEvent.getParameter("id").indexOf("OvPepNec") !== -1){
                     this._dialogDetail = sap.ui.xmlfragment(oView.getId(),"com.mbp.zuxcobmaterial.view.fragments.DialogOvPepNec", this);
+                }else if(oEvent.getParameter("id").indexOf("CreditoAlcada") !== -1){
+                    this._dialogDetail = sap.ui.xmlfragment(oView.getId(),"com.mbp.zuxcobmaterial.view.fragments.DialogCreditAlcada", this);
                 }
                 
             }

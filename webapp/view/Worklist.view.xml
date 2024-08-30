@@ -128,7 +128,18 @@
                             <ui:template>
                                 <Link id="OvPepEmpLink" text="{ parts: ['OvPep', 'MaterialBaseUnitOvPep'], formatter: '.formatter.formatQuantStock'}" press="onLinkPressed"/>
                             </ui:template>
-                        </ui:Column>                         
+                        </ui:Column>   
+
+                        <ui:Column id="CredAlcadaColumn" hAlign="End" width="10rem">
+                            <ui:customData>
+                                <core:CustomData key="p13nData"
+                                                 value='\{"columnKey": "CreditoAlcada", "filterProperty": "CreditoAlcada", "sortProperty": "CreditoAlcada", "autoColumnWidth": \{ "visibleProperty": "CreditoAlcada" }, "columnIndex": 17, "leadingProperty": "CreditoAlcada,MaterialUnitCreditoAlcada"}' />
+                            </ui:customData>
+                            <Text text="{/#ZC_COB_MATERIALType/CreditoAlcada/@sap:label}"/>
+                            <ui:template>
+                                <Link id="CreditoAlcadaLink" text="{ parts: ['CreditoAlcada', 'MaterialUnitCreditoAlcada'], formatter: '.formatter.formatQuantStock'}" press="onLinkPressed"/>
+                            </ui:template>
+                        </ui:Column>                                                
 
                         <ui:Column id="RequisicaoColumn" hAlign="End" width="10rem">
                             <ui:customData>
