@@ -167,7 +167,7 @@ sap.ui.define([
 
             newFilter = new sap.ui.model.Filter("Plant", sap.ui.model.FilterOperator.EQ, this._oObjectPressed.Plant );
             mBindingParams.filters.push(newFilter);            
-        },
+        },      
 
         onHandlePressTableAction: function(oEvent){
             var oDataModel = this.getModel(),
