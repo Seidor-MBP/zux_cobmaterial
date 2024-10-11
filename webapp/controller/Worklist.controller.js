@@ -88,7 +88,7 @@ sap.ui.define([
                                                                   new sap.ui.model.Filter("ConsumoMensal", sap.ui.model.FilterOperator.NE, '0.000'),
                                                                   new sap.ui.model.Filter("ConsumoMesAnoAnt", sap.ui.model.FilterOperator.NE, '0.000'),
                                                                   new sap.ui.model.Filter("ReorderThresholdQuantity", sap.ui.model.FilterOperator.NE, '0.000'),
-                                                                  new sap.ui.model.Filter("StockAtual", sap.ui.model.FilterOperator.NE, '0.000'),
+                                                                  new sap.ui.model.Filter("StockUtilLivre", sap.ui.model.FilterOperator.NE, '0.000'),
                                                                   new sap.ui.model.Filter("OvPepNecessidade", sap.ui.model.FilterOperator.NE, '0.000'),
                                                                   new sap.ui.model.Filter("OvPep", sap.ui.model.FilterOperator.NE, '0.000'),
                                                                   new sap.ui.model.Filter("MinimumLotSizeQuantity", sap.ui.model.FilterOperator.NE, '0.000'),

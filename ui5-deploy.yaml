@@ -20,4 +20,4 @@ builder:
           name: ZUX_COBMATERIAL
           description: Cobertura Material
           package: ZPC_COB_MATERIAL
-          transport: SHDK902545
+          transport: SHDK910025

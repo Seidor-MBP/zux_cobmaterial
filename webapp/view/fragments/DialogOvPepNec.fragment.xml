@@ -16,7 +16,7 @@
 	    
     	<content>  
 				<smartTable:SmartTable id="listOvPepNecessidade"
-										entitySet="ZC_OV_PEP_NECESSIDADE" 
+										entitySet="ZC_OV_PEP_NAO_PROGRAMADO" 
 										tableType="Table" 
 										enableAutoBinding="true"
 										header="{i18n>table_title1}" 

@@ -16,7 +16,7 @@
 	    
     	<content>  
 				<smartTable:SmartTable id="listOvPepEmpenhado"
-										entitySet="ZC_OV_PEP" 
+										entitySet="ZC_OV_PEP_PROGRAMADO" 
 										tableType="Table" 
 										enableAutoBinding="true"
 										header="{i18n>table_title1}" 
