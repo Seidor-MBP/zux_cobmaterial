@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: "2.5"
+specVersion: "3.1"
 metadata:
   name: com.mbp.zuxcobmaterial
 type: application
@@ -14,10 +14,11 @@ builder:
       afterTask: generateCachebusterInfo
       configuration:
         target:
-          url: http://192.168.50.14:8000
-          client: "100"
+          url: http://192.168.50.14:8000/
         app:
           name: ZUX_COBMATERIAL
-          description: Cobertura Material
+          description: Cobertura de Material
           package: ZPC_COB_MATERIAL
-          transport: SHDK910248
+          transport: SHDK912920
+        exclude:
+          - /test/
