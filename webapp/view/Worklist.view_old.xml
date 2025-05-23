@@ -54,8 +54,7 @@
                                     showFullScreenButton="true"
                                     requestAtLeastFields="Product,Plant"
                                     beforeRebindTable="onBeforeRebindTable"
-									class="sapUiResponsiveContentPadding"
-                                    beforeExport="onBeforeExport">
+									class="sapUiResponsiveContentPadding">
                 
                 
 				<smartTable:customToolbar>
