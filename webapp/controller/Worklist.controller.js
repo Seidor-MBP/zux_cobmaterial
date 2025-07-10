@@ -92,6 +92,7 @@ sap.ui.define([
                     new sap.ui.model.Filter("StockUtilLivre", sap.ui.model.FilterOperator.NE, '0.000'),
                     new sap.ui.model.Filter("OvPepNecessidade", sap.ui.model.FilterOperator.NE, '0.000'),
                     new sap.ui.model.Filter("OvPep", sap.ui.model.FilterOperator.NE, '0.000'),
+                    new sap.ui.model.Filter("OvPepAguardandoProjeto", sap.ui.model.FilterOperator.NE, '0.000'),
                     new sap.ui.model.Filter("MinimumLotSizeQuantity", sap.ui.model.FilterOperator.NE, '0.000'),
                     new sap.ui.model.Filter("SafetyStockQuantity", sap.ui.model.FilterOperator.NE, '0.000')], and: false
                 }));
@@ -128,6 +129,8 @@ sap.ui.define([
                     this._dialogDetail = sap.ui.xmlfragment(oView.getId(), "com.mbp.zuxcobmaterial.view.fragments.DialogOvPepNec", this);
                 } else if (oEvent.getParameter("id").indexOf("CreditoAlcada") !== -1) {
                     this._dialogDetail = sap.ui.xmlfragment(oView.getId(), "com.mbp.zuxcobmaterial.view.fragments.DialogCreditAlcada", this);
+                } else if (oEvent.getParameter("id").indexOf("OvPepAgPr") !== -1) {
+                    this._dialogDetail = sap.ui.xmlfragment(oView.getId(), "com.mbp.zuxcobmaterial.view.fragments.DialogOvPepAgProj", this);
                 }
 
             }
