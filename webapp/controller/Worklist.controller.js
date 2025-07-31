@@ -36,6 +36,17 @@ sap.ui.define([
             this.getView().setModel(oMessageManager.getMessageModel(), "message");
             oMessageManager.registerObject(this.getView(), true);
 
+            this.oSapModel = this.getOwnerComponent().getModel();
+
+            this.ZC_OV_PEP_NECESSIDADE_return_prod_filter = [];
+            this.ZC_OV_PEP_NECESSIDADE_return_plant_filter = [];
+
+            // Sobreescreve a função buscar
+            this.oSmartFilterBar = this.byId("smartFilterBarMateriais");
+
+            this.oSmartFilterBar._zStandardSearch = this.oSmartFilterBar.search;
+            this.oSmartFilterBar.search = this.onSearch.bind(this);
+
         },
 
         /* =========================================================== */
@@ -70,6 +81,67 @@ sap.ui.define([
             
         },*/
 
+        onSearch: async function (...args) {
+
+            this.ZC_OV_PEP_NECESSIDADE_return_prod_filter = [];
+            this.ZC_OV_PEP_NECESSIDADE_return_plant_filter = [];
+
+            let prod = [];
+            let plant = [];
+
+            let mSmartFilterBarFilters = this.oSmartFilterBar.getFilters();
+
+            let ZC_OV_PEP_NECESSIDADE_filter = [];
+
+            let bindingParamsFiltersArr = this.getFiltersArrayFromOFilter(mSmartFilterBarFilters);
+            let prodExists = bindingParamsFiltersArr.findIndex(e => e.sPath === "Product");
+
+            if (prodExists < 0) {
+
+                bindingParamsFiltersArr.forEach(e => {
+                    if (e.sPath === "OrdemVendaFilter") {
+                        ZC_OV_PEP_NECESSIDADE_filter.push(new sap.ui.model.Filter("OrdemVenda", e.getOperator(), e.getValue1(), e.getValue2()));
+                    }
+                    if (e.sPath === "PepFilter") {
+                        ZC_OV_PEP_NECESSIDADE_filter.push(new sap.ui.model.Filter("Pep", e.getOperator(), e.getValue1(), e.getValue2()));
+                    }
+                });
+
+            }
+
+            if (ZC_OV_PEP_NECESSIDADE_filter.length) {
+
+                let that = this;
+
+                await new Promise(function (fnResolve, fnReject) {
+                    that.oSapModel.read("/ZC_OV_PEP_NECESSIDADE", {
+                        filters: ZC_OV_PEP_NECESSIDADE_filter,
+                        success: function (oData) {
+                            fnResolve(oData)
+                        }.bind(that),
+                        error: function (oError) {
+                            fnReject(oError)
+                        }.bind(that)
+                    });
+                }).then(function (oData) {
+                    oData.results.forEach(r => {
+                        prod.push(r.Material);
+                        plant.push(r.Plant);
+                    });
+                });
+
+            }
+            
+            prod = prod.filter((p, i) => prod.indexOf(p) === i);
+            plant = plant.filter((p, i) => plant.indexOf(p) === i);
+
+            prod.forEach(p => that.ZC_OV_PEP_NECESSIDADE_return_prod_filter.push(new sap.ui.model.Filter("Product", sap.ui.model.FilterOperator.EQ, p)))
+            plant.forEach(p => that.ZC_OV_PEP_NECESSIDADE_return_plant_filter.push(new sap.ui.model.Filter("Plant", sap.ui.model.FilterOperator.EQ, p)))
+
+            this.oSmartFilterBar._zStandardSearch(...args);
+
+        },
+
         onBeforeRebindTable: function (oEvent) {
             /*var oSmartTable = oEvent.getSource();
             var oSmartFilterBar = this.byId(oSmartTable.getSmartFilterId());
@@ -83,23 +155,38 @@ sap.ui.define([
             var sSelectedNoMov = this.byId("ID_FILTER_NO_NULL_MOVIMENT").getSelected();
             var oFilters = [];
 
+            if (this.ZC_OV_PEP_NECESSIDADE_return_prod_filter.length > 0)
+                oFilters.push(new sap.ui.model.Filter({
+                    filters: this.ZC_OV_PEP_NECESSIDADE_return_prod_filter,
+                    and: false
+                }));
+
+            if (this.ZC_OV_PEP_NECESSIDADE_return_plant_filter.length > 0)
+                oFilters.push(new sap.ui.model.Filter({
+                    filters: this.ZC_OV_PEP_NECESSIDADE_return_plant_filter,
+                    and: false
+                }));
+
             if (!!sSelectedNoMov) {
                 oFilters.push(new sap.ui.model.Filter({
-                    filters: [new sap.ui.model.Filter("ConsumoTotal", sap.ui.model.FilterOperator.NE, '0.000'),
-                    new sap.ui.model.Filter("ConsumoMensal", sap.ui.model.FilterOperator.NE, '0.000'),
-                    new sap.ui.model.Filter("ConsumoMesAnoAnt", sap.ui.model.FilterOperator.NE, '0.000'),
-                    new sap.ui.model.Filter("ReorderThresholdQuantity", sap.ui.model.FilterOperator.NE, '0.000'),
-                    new sap.ui.model.Filter("StockUtilLivre", sap.ui.model.FilterOperator.NE, '0.000'),
-                    new sap.ui.model.Filter("OvPepNecessidade", sap.ui.model.FilterOperator.NE, '0.000'),
-                    new sap.ui.model.Filter("OvPep", sap.ui.model.FilterOperator.NE, '0.000'),
-                    new sap.ui.model.Filter("OvPepAguardandoProjeto", sap.ui.model.FilterOperator.NE, '0.000'),
-                    new sap.ui.model.Filter("MinimumLotSizeQuantity", sap.ui.model.FilterOperator.NE, '0.000'),
-                    new sap.ui.model.Filter("SafetyStockQuantity", sap.ui.model.FilterOperator.NE, '0.000')], and: false
+                    filters: [
+                        new sap.ui.model.Filter("ConsumoTotal", sap.ui.model.FilterOperator.NE, '0.000'),
+                        new sap.ui.model.Filter("ConsumoMensal", sap.ui.model.FilterOperator.NE, '0.000'),
+                        new sap.ui.model.Filter("ConsumoMesAnoAnt", sap.ui.model.FilterOperator.NE, '0.000'),
+                        new sap.ui.model.Filter("ReorderThresholdQuantity", sap.ui.model.FilterOperator.NE, '0.000'),
+                        new sap.ui.model.Filter("StockUtilLivre", sap.ui.model.FilterOperator.NE, '0.000'),
+                        new sap.ui.model.Filter("OvPepNecessidade", sap.ui.model.FilterOperator.NE, '0.000'),
+                        new sap.ui.model.Filter("OvPep", sap.ui.model.FilterOperator.NE, '0.000'),
+                        new sap.ui.model.Filter("OvPepAguardandoProjeto", sap.ui.model.FilterOperator.NE, '0.000'),
+                        new sap.ui.model.Filter("MinimumLotSizeQuantity", sap.ui.model.FilterOperator.NE, '0.000'),
+                        new sap.ui.model.Filter("SafetyStockQuantity", sap.ui.model.FilterOperator.NE, '0.000')
+                    ], and: false
                 }));
-                var newFilter = new sap.ui.model.Filter({ filters: oFilters, and: false });
-                mBindingParams.filters.push(newFilter);
             }
 
+            if (oFilters.length > 0) {
+                mBindingParams.filters.push(new sap.ui.model.Filter({ filters: oFilters, and: true }));
+            }
         },
 
         onLinkPressed: function (oEvent) {
@@ -183,8 +270,7 @@ sap.ui.define([
             newFilter = new sap.ui.model.Filter("Plant", sap.ui.model.FilterOperator.EQ, this._oObjectPressed.Plant);
             mBindingParams.filters.push(newFilter);
 
-            var oSmartFilterBar = this.byId("smartFilterBarMateriais");
-            var oSmartFilterBarFilters = oSmartFilterBar.getFilters();
+            var oSmartFilterBarFilters = this.oSmartFilterBar.getFilters();
             var aSTFilters = this.getFiltersArrayFromOFilter(oSmartFilterBarFilters);
 
             aSTFilters.forEach(stFilter => {
