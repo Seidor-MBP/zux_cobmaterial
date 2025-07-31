@@ -10,7 +10,7 @@ server:
         ignoreCertError: false
         backend:
           - path: /sap
-            url: https://mbpvrs4hvaq01.mbp.com.br:8100
+            url: http://MBPVRS4HVAQ01.mbp.com.br:8000
             client: "500"
         ui5:
           path:

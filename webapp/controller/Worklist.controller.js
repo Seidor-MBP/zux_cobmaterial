@@ -174,6 +174,47 @@ sap.ui.define([
             mBindingParams.filters.push(newFilter);
         },
 
+        onBeforeRebindTableMaterialPlantDocs: function (oEvent) {
+            var mBindingParams = oEvent.getParameter("bindingParams");
+
+            var newFilter = new sap.ui.model.Filter("Material", sap.ui.model.FilterOperator.EQ, this._oObjectPressed.Product);
+            mBindingParams.filters.push(newFilter);
+
+            newFilter = new sap.ui.model.Filter("Plant", sap.ui.model.FilterOperator.EQ, this._oObjectPressed.Plant);
+            mBindingParams.filters.push(newFilter);
+
+            var oSmartFilterBar = this.byId("smartFilterBarMateriais");
+            var oSmartFilterBarFilters = oSmartFilterBar.getFilters();
+            var aSTFilters = this.getFiltersArrayFromOFilter(oSmartFilterBarFilters);
+
+            aSTFilters.forEach(stFilter => {
+                let path = stFilter.getPath();
+                if (path == "OrdemVendaFilter") {
+                    newFilter = new sap.ui.model.Filter("OrdemVenda", stFilter.getOperator(), stFilter.getValue1(), stFilter.getValue2());
+                    mBindingParams.filters.push(newFilter);
+                }
+                else if (path == "PepFilter") {
+                    newFilter = new sap.ui.model.Filter("Pep", stFilter.getOperator(), stFilter.getValue1(), stFilter.getValue2());
+                    mBindingParams.filters.push(newFilter);
+                }
+            });
+        },
+
+        getFiltersArrayFromOFilter(oFilter) {
+            if (!oFilter) return [];
+
+            let aFilter = [];
+
+            oFilter.forEach((filter) => {
+                if (filter.getPath()) {
+                    aFilter.push(filter);
+                }
+                aFilter.push(...this.getFiltersArrayFromOFilter(filter.getFilters()));
+            });
+
+            return aFilter;
+        },
+
         onHandlePressTableAction: function (oEvent) {
             var oDataModel = this.getModel(),
                 oViewModel = this.getModel("worklistView");
@@ -227,7 +268,7 @@ sap.ui.define([
 
         onBeforeExport: function (oEvent) {
 
-            /*MM:WSJ - Nescessário sobrescrever o metodo onBeforeExport para pegar os dados dos campos que são link no frontend*/
+            /*MM:WSJ - Nescess�rio sobrescrever o metodo onBeforeExport para pegar os dados dos campos que s�o link no frontend*/
 
             var mExportSettings = oEvent.getParameter("exportSettings");
 
@@ -236,7 +277,7 @@ sap.ui.define([
             });
 
 
-            /*Formata os valores para o padrão BRL*/
+            /*Formata os valores para o padr�o BRL*/
             var numberFormatter = new Intl.NumberFormat("pt-BR", {
                 minimumFractionDigits: 3,
                 maximumFractionDigits: 3,

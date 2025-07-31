@@ -23,7 +23,7 @@
 										useVariantManagement="false"
 										showFullScreenButton="true"
 										showTablePersonalisation="false"
-										beforeRebindTable="onBeforeRebindTableMaterialPlant"
+										beforeRebindTable="onBeforeRebindTableMaterialPlantDocs"
 										class="sapUiResponsiveContentPadding">    
 
 				<ui:Table visibleRowCountMode="Auto">				

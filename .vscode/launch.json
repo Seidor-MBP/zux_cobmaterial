@@ -23,7 +23,7 @@
             "outputCapture": "std",
             "env": {
                 "DEBUG": "--inspect",
-                "FIORI_TOOLS_URL_PARAMS": "sap-ui-xx-viewCache=false"
+                "FIORI_TOOLS_URL_PARAMS": "sap-client=100&sap-ui-xx-viewCache=false"
             }
         },
         {
@@ -47,7 +47,7 @@
             "internalConsoleOptions": "openOnSessionStart",
             "outputCapture": "std",
             "env": {
-                "FIORI_TOOLS_URL_PARAMS": "sap-ui-xx-viewCache=false"
+                "FIORI_TOOLS_URL_PARAMS": "sap-client=100&sap-ui-xx-viewCache=false"
             }
         },
         {
@@ -73,7 +73,7 @@
             "internalConsoleOptions": "openOnSessionStart",
             "outputCapture": "std",
             "env": {
-                "FIORI_TOOLS_URL_PARAMS": "sap-ui-xx-viewCache=false"
+                "FIORI_TOOLS_URL_PARAMS": "sap-client=100&sap-ui-xx-viewCache=false"
             }
         }
     ]
