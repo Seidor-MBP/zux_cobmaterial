@@ -5,7 +5,7 @@
 	xmlns:smartTable="sap.ui.comp.smarttable">
 
   <Dialog
-  		title="{i18n>dialog_title5}"
+  		title="{i18n>dialog_title8}"
 	    type="Message"
         state="Information"
         contentWidth='80%'

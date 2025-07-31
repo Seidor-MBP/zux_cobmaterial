@@ -97,9 +97,9 @@
                         </ui:Column>
                         
                         <!--OV/PEP Aguardando Projeto -->
-                        <ui:Column id="OvPepAgPrColumn" hAlign="End" width="10rem">
+                        <ui:Column id="OvPepAguardandoProjeto" hAlign="End" width="10rem">
                             <ui:customData>
-                                <core:CustomData key="p13nData" value='\{"columnKey": "OvPepAgPr", "filterProperty": "OvPepAguardandoProjeto", "sortProperty": "OvPepAguardandoProjeto", "autoColumnWidth": \{ "visibleProperty": "OvPepAguardandoProjeto" }, "columnIndex": 16, "leadingProperty": "OvPepAguardandoProjeto,MaterialUnitPepAguardandoProj"}' />
+                                <core:CustomData key="p13nData" value='\{"columnKey": "OvPepAguardandoProjeto", "filterProperty": "OvPepAguardandoProjeto", "sortProperty": "OvPepAguardandoProjeto", "autoColumnWidth": \{ "visibleProperty": "OvPepAguardandoProjeto" }, "columnIndex": 17, "leadingProperty": "OvPepAguardandoProjeto,MaterialUnitPepAguardandoProj"}' />
                             </ui:customData>
                             <Text text="{/#ZC_COB_MATERIALType/OvPepAguardandoProjeto/@sap:label}"/>
                             <ui:template>
@@ -110,7 +110,7 @@
 
                         <ui:Column id="CredAlcadaColumn" hAlign="End" width="10rem">
                             <ui:customData>
-                                <core:CustomData key="p13nData" value='\{"columnKey": "CreditoAlcada", "filterProperty": "CreditoAlcada", "sortProperty": "CreditoAlcada", "autoColumnWidth": \{ "visibleProperty": "CreditoAlcada" }, "columnIndex": 17, "leadingProperty": "CreditoAlcada,MaterialUnitCreditoAlcada"}' />
+                                <core:CustomData key="p13nData" value='\{"columnKey": "CreditoAlcada", "filterProperty": "CreditoAlcada", "sortProperty": "CreditoAlcada", "autoColumnWidth": \{ "visibleProperty": "CreditoAlcada" }, "columnIndex": 18, "leadingProperty": "CreditoAlcada,MaterialUnitCreditoAlcada"}' />
                             </ui:customData>
                             <Text text="{/#ZC_COB_MATERIALType/CreditoAlcada/@sap:label}"/>
                             <ui:template>
