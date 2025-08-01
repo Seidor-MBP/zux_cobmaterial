@@ -47,6 +47,9 @@ sap.ui.define([
             this.oSmartFilterBar._zStandardSearch = this.oSmartFilterBar.search;
             this.oSmartFilterBar.search = this.onSearch.bind(this);
 
+            // Armazena a smarttable
+            this.oSmartTable = this.byId("listMaterial");
+
         },
 
         /* =========================================================== */
@@ -83,6 +86,8 @@ sap.ui.define([
 
         onSearch: async function (...args) {
 
+            this.oSmartTable.setBusy(true);
+            
             this.ZC_OV_PEP_NECESSIDADE_return_prod_filter = [];
             this.ZC_OV_PEP_NECESSIDADE_return_plant_filter = [];
 
@@ -131,13 +136,15 @@ sap.ui.define([
                 });
 
             }
-            
+
             prod = prod.filter((p, i) => prod.indexOf(p) === i);
             plant = plant.filter((p, i) => plant.indexOf(p) === i);
 
-            prod.forEach(p => that.ZC_OV_PEP_NECESSIDADE_return_prod_filter.push(new sap.ui.model.Filter("Product", sap.ui.model.FilterOperator.EQ, p)))
-            plant.forEach(p => that.ZC_OV_PEP_NECESSIDADE_return_plant_filter.push(new sap.ui.model.Filter("Plant", sap.ui.model.FilterOperator.EQ, p)))
+            prod.forEach(p => this.ZC_OV_PEP_NECESSIDADE_return_prod_filter.push(new sap.ui.model.Filter("Product", sap.ui.model.FilterOperator.EQ, p)))
+            plant.forEach(p => this.ZC_OV_PEP_NECESSIDADE_return_plant_filter.push(new sap.ui.model.Filter("Plant", sap.ui.model.FilterOperator.EQ, p)))
 
+
+            this.oSmartTable.setBusy(false);
             this.oSmartFilterBar._zStandardSearch(...args);
 
         },
@@ -314,7 +321,7 @@ sap.ui.define([
             aDeferredGroup.push("batchCreate");
             oDataModel.setDeferredGroups(aDeferredGroup);
 
-            var oTable = this.byId("listMaterial").getTable();
+            var oTable = this.oSmartTable.getTable();
             var sSelectedIndice = oTable.getSelectedIndices();
 
             if (!sSelectedIndice.length) {
@@ -324,7 +331,7 @@ sap.ui.define([
             }
 
             sSelectedIndice.forEach(function (oItem) {
-                var sObject = this.byId("listMaterial")._getRowBinding().getContexts()[oItem].getObject();
+                var sObject = this.oSmartTable._getRowBinding().getContexts()[oItem].getObject();
                 oEntry = {
                     Matnr: sObject.Product,
                     Werks: sObject.Plant,
@@ -358,7 +365,7 @@ sap.ui.define([
 
             var mExportSettings = oEvent.getParameter("exportSettings");
 
-            var aItems = this.byId("listMaterial").getTable().getBinding("rows").getContexts().map(function (oContext) {
+            var aItems = this.oSmartTable.getTable().getBinding("rows").getContexts().map(function (oContext) {
                 return oContext.getObject();
             });
 
