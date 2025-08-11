@@ -38,8 +38,7 @@ sap.ui.define([
 
             this.oSapModel = this.getOwnerComponent().getModel();
 
-            this.ZC_OV_PEP_NECESSIDADE_return_prod_filter = [];
-            this.ZC_OV_PEP_NECESSIDADE_return_plant_filter = [];
+            this.reset_ZC_OV_PEP_NECESSIDADE_custom_filter();
 
             // Sobreescreve a função buscar
             this.oSmartFilterBar = this.byId("smartFilterBarMateriais");
@@ -49,6 +48,16 @@ sap.ui.define([
 
             // Armazena a smarttable
             this.oSmartTable = this.byId("listMaterial");
+
+        },
+
+        reset_ZC_OV_PEP_NECESSIDADE_custom_filter: function () {
+
+            this.ZC_OV_PEP_NECESSIDADE_custom_filter = {
+                filtered: false,
+                return_prod_filter: [],
+                return_plant_filter: []
+            };
 
         },
 
@@ -87,9 +96,8 @@ sap.ui.define([
         onSearch: async function (...args) {
 
             this.oSmartTable.setBusy(true);
-            
-            this.ZC_OV_PEP_NECESSIDADE_return_prod_filter = [];
-            this.ZC_OV_PEP_NECESSIDADE_return_plant_filter = [];
+
+            this.reset_ZC_OV_PEP_NECESSIDADE_custom_filter();
 
             let prod = [];
             let plant = [];
@@ -99,22 +107,19 @@ sap.ui.define([
             let ZC_OV_PEP_NECESSIDADE_filter = [];
 
             let bindingParamsFiltersArr = this.getFiltersArrayFromOFilter(mSmartFilterBarFilters);
-            let prodExists = bindingParamsFiltersArr.findIndex(e => e.sPath === "Product");
 
-            if (prodExists < 0) {
-
-                bindingParamsFiltersArr.forEach(e => {
-                    if (e.sPath === "OrdemVendaFilter") {
-                        ZC_OV_PEP_NECESSIDADE_filter.push(new sap.ui.model.Filter("OrdemVenda", e.getOperator(), e.getValue1(), e.getValue2()));
-                    }
-                    if (e.sPath === "PepFilter") {
-                        ZC_OV_PEP_NECESSIDADE_filter.push(new sap.ui.model.Filter("Pep", e.getOperator(), e.getValue1(), e.getValue2()));
-                    }
-                });
-
-            }
+            bindingParamsFiltersArr.forEach(e => {
+                if (e.sPath === "OrdemVendaFilter") {
+                    ZC_OV_PEP_NECESSIDADE_filter.push(new sap.ui.model.Filter("OrdemVenda", e.getOperator(), e.getValue1(), e.getValue2()));
+                }
+                if (e.sPath === "PepFilter") {
+                    ZC_OV_PEP_NECESSIDADE_filter.push(new sap.ui.model.Filter("Pep", e.getOperator(), e.getValue1(), e.getValue2()));
+                }
+            });
 
             if (ZC_OV_PEP_NECESSIDADE_filter.length) {
+
+                this.ZC_OV_PEP_NECESSIDADE_custom_filter.filtered = true;
 
                 let that = this;
 
@@ -140,11 +145,16 @@ sap.ui.define([
             prod = prod.filter((p, i) => prod.indexOf(p) === i);
             plant = plant.filter((p, i) => plant.indexOf(p) === i);
 
-            prod.forEach(p => this.ZC_OV_PEP_NECESSIDADE_return_prod_filter.push(new sap.ui.model.Filter("Product", sap.ui.model.FilterOperator.EQ, p)))
-            plant.forEach(p => this.ZC_OV_PEP_NECESSIDADE_return_plant_filter.push(new sap.ui.model.Filter("Plant", sap.ui.model.FilterOperator.EQ, p)))
-
+            prod.forEach(p => this.ZC_OV_PEP_NECESSIDADE_custom_filter.return_prod_filter.push(new sap.ui.model.Filter("Product", sap.ui.model.FilterOperator.EQ, p)));
+            plant.forEach(p => this.ZC_OV_PEP_NECESSIDADE_custom_filter.return_plant_filter.push(new sap.ui.model.Filter("Plant", sap.ui.model.FilterOperator.EQ, p)));
 
             this.oSmartTable.setBusy(false);
+
+            if (this.ZC_OV_PEP_NECESSIDADE_custom_filter.filtered == true && this.ZC_OV_PEP_NECESSIDADE_custom_filter.return_prod_filter.length <= 0) {
+                // quando existe filtro, porém retorna nenhum material, a tela deve retornar em branco
+                return;
+            }
+
             this.oSmartFilterBar._zStandardSearch(...args);
 
         },
@@ -162,15 +172,15 @@ sap.ui.define([
             var sSelectedNoMov = this.byId("ID_FILTER_NO_NULL_MOVIMENT").getSelected();
             var oFilters = [];
 
-            if (this.ZC_OV_PEP_NECESSIDADE_return_prod_filter.length > 0)
+            if (this.ZC_OV_PEP_NECESSIDADE_custom_filter.return_prod_filter.length > 0)
                 oFilters.push(new sap.ui.model.Filter({
-                    filters: this.ZC_OV_PEP_NECESSIDADE_return_prod_filter,
+                    filters: this.ZC_OV_PEP_NECESSIDADE_custom_filter.return_prod_filter,
                     and: false
                 }));
 
-            if (this.ZC_OV_PEP_NECESSIDADE_return_plant_filter.length > 0)
+            if (this.ZC_OV_PEP_NECESSIDADE_custom_filter.return_plant_filter.length > 0)
                 oFilters.push(new sap.ui.model.Filter({
-                    filters: this.ZC_OV_PEP_NECESSIDADE_return_plant_filter,
+                    filters: this.ZC_OV_PEP_NECESSIDADE_custom_filter.return_plant_filter,
                     and: false
                 }));
 
