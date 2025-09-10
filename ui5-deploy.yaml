@@ -14,13 +14,12 @@ builder:
       afterTask: generateCachebusterInfo
       configuration:
         target:
-          url: http://MBPVRS4HVAD01.mbp.com.br:8000
+          url: http://192.168.50.14:8000/
           client: '100'
         app:
           name: ZUX_COBMATERIAL
           description: Cobertura de Material
           package: ZPC_COB_MATERIAL
-          #transport: SHDK912920
           transport: SHDK913428
         exclude:
           - /test/

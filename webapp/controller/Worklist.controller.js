@@ -168,6 +168,9 @@ sap.ui.define([
             //var oTable = oEvent.getSource().getTable();
             //oTable.attachBusyStateChanged(this._onOptimizeSmartTableColumn);
 
+            /*WSJ Exibe todas as linhas que o deveriam vir no GET*/
+            this.getModel().setSizeLimit(1000000000);
+
             var mBindingParams = oEvent.getParameter("bindingParams");
             var sSelectedNoMov = this.byId("ID_FILTER_NO_NULL_MOVIMENT").getSelected();
             var oFilters = [];
@@ -379,7 +382,6 @@ sap.ui.define([
                 return oContext.getObject();
             });
 
-
             /*Formata os valores para o padr�o BRL*/
             var numberFormatter = new Intl.NumberFormat("pt-BR", {
                 minimumFractionDigits: 3,
@@ -398,13 +400,12 @@ sap.ui.define([
                 item.StockUtilLivreNew = numberFormatter.format(item.StockUtilLivreNew) + " " + item.MaterialBaseUnitStockUtilLivre;
             });
 
-
             /*Passa os dados formatados para o template*/
             mExportSettings.dataSource = {
                 type: "array",
                 data: aItems
             };
-
+            
             mExportSettings.workbook.columns.forEach(function (column) {
 
                 /*Formatamos as colunas com seus respectivos nomes para garantir que os dados sejam encontrados*/
