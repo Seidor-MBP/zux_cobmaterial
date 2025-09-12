@@ -7,7 +7,8 @@ sap.ui.define([
     "sap/ui/core/BusyIndicator",
     "sap/m/MessageToast",
     "sap/m/MessageBox",
-    "sap/ui/core/Fragment"
+    "sap/ui/core/Fragment",
+    "sap/suite/ui/commons/statusindicator/PropertyThreshold"
 ], function (BaseController, JSONModel, formatter, Filter, FilterOperator, BusyIndicator, MessageToast, MessageBox, Fragment) {
     "use strict";
 
@@ -36,6 +37,12 @@ sap.ui.define([
             this.getView().setModel(oMessageManager.getMessageModel(), "message");
             oMessageManager.registerObject(this.getView(), true);
 
+            /*WSJ Exibe todas as linhas que o deveriam vir no GET*/
+
+            /*             sap.ui.table.Table.setThreshold(1000000000);
+                        
+                        this.getOwnerComponent().getModel().setSizeLimit(1000000000);
+             */
             this.oSapModel = this.getOwnerComponent().getModel();
 
             this.reset_ZC_OV_PEP_NECESSIDADE_custom_filter();
@@ -167,9 +174,6 @@ sap.ui.define([
 
             //var oTable = oEvent.getSource().getTable();
             //oTable.attachBusyStateChanged(this._onOptimizeSmartTableColumn);
-
-            /*WSJ Exibe todas as linhas que o deveriam vir no GET*/
-            this.getModel().setSizeLimit(1000000000);
 
             var mBindingParams = oEvent.getParameter("bindingParams");
             var sSelectedNoMov = this.byId("ID_FILTER_NO_NULL_MOVIMENT").getSelected();
@@ -378,18 +382,18 @@ sap.ui.define([
 
             var mExportSettings = oEvent.getParameter("exportSettings");
 
-            var aItems = this.oSmartTable.getTable().getBinding("rows").getContexts().map(function (oContext) {
+           /*  var aItems = this.oSmartTable.getTable().getBinding("rows").getContexts().map(function (oContext) {
                 return oContext.getObject();
-            });
+            }); */
 
             /*Formata os valores para o padr�o BRL*/
-            var numberFormatter = new Intl.NumberFormat("pt-BR", {
+           /*  var numberFormatter = new Intl.NumberFormat("pt-BR", {
                 minimumFractionDigits: 3,
                 maximumFractionDigits: 3,
-            });
+            }); */
 
             /*Formata com as unidades de medida*/
-            aItems.forEach(function (item) {
+            /* aItems.forEach(function (item) {
                 item.ConsumoMesAnoAnt = numberFormatter.format(item.ConsumoMesAnoAnt) + " " + item.MaterialUnitConsumoMesAnoAnt;
                 item.ConsumoMensal = numberFormatter.format(item.ConsumoMensal) + " " + item.MaterialUnitConsumoMensal;
                 item.StockAtual = numberFormatter.format(item.StockAtual) + " " + item.MaterialBaseUnitStockAtual;
@@ -398,14 +402,14 @@ sap.ui.define([
                 item.ConsumoTotal = numberFormatter.format(item.ConsumoTotal) + " " + item.MaterialUnitConsumoTotal;
                 item.CreditoAlcada = numberFormatter.format(item.CreditoAlcada) + " " + item.MaterialUnitCreditoAlcada;
                 item.StockUtilLivreNew = numberFormatter.format(item.StockUtilLivreNew) + " " + item.MaterialBaseUnitStockUtilLivre;
-            });
+            }); */
 
             /*Passa os dados formatados para o template*/
-            mExportSettings.dataSource = {
-                type: "array",
-                data: aItems
-            };
-            
+            /*             mExportSettings.dataSource = {
+                            type: "array",
+                            data: aItems
+                        }; */
+
             mExportSettings.workbook.columns.forEach(function (column) {
 
                 /*Formatamos as colunas com seus respectivos nomes para garantir que os dados sejam encontrados*/
@@ -417,6 +421,15 @@ sap.ui.define([
                         column.property = "ConsumoMesAnoAnt"
                         column.label = "ConsumoMesAnoAnt"
                         column.template = "{ConsumoMesAnoAnt}";
+                        column.type = "string";
+                        break
+
+                    case "OvPepAguardandoProjeto,MaterialUnitPepAguardandoProj":
+
+                        column.text = "Ov/Pep Aguardando projeto";
+                        column.property = "OvPepAguardandoProjeto"
+                        column.label = "OvPepAguardandoProjeto"
+                        column.template = "{OvPepAguardandoProjeto}";
                         column.type = "string";
                         break
 
