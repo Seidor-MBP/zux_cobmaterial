@@ -20,6 +20,8 @@ builder:
           name: ZUX_COBMATERIAL
           description: Cobertura de Material
           package: ZPC_COB_MATERIAL
-          transport: SHDK914568
+          #transport: SHDK914568
+          transport: SHDK914744
+
         exclude:
           - /test/

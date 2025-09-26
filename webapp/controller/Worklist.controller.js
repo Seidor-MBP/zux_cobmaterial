@@ -262,7 +262,7 @@ sap.ui.define([
             this._dialogDetail = null;
         },
 
-        onBeforeRebindTableMaterialPlantAno: function (oEvent) {
+        getDeafultFiltersAndBinding: function (oEvent, needStorageFilter){
             var mBindingParams = oEvent.getParameter("bindingParams");
 
             var newFilter = new sap.ui.model.Filter("Material", sap.ui.model.FilterOperator.EQ, this._oObjectPressed.Product);
@@ -270,29 +270,41 @@ sap.ui.define([
 
             newFilter = new sap.ui.model.Filter("Plant", sap.ui.model.FilterOperator.EQ, this._oObjectPressed.Plant);
             mBindingParams.filters.push(newFilter);
+
+            return mBindingParams;
+        },
+
+        onBeforeRebindTableMaterialPlant: function (oEvent) {
+            var mBindingParams = this.getDeafultFiltersAndBinding(oEvent, false);
+        },
+
+        onBeforeRebindTableMaterialPlantAno: function (oEvent) {
+            var mBindingParams = this.getDeafultFiltersAndBinding(oEvent, false);
+            var newFilter;
 
             newFilter = new sap.ui.model.Filter("Ano", sap.ui.model.FilterOperator.EQ, this._oObjectPressed.Ano);
             mBindingParams.filters.push(newFilter);
         },
 
-        onBeforeRebindTableMaterialPlant: function (oEvent) {
-            var mBindingParams = oEvent.getParameter("bindingParams");
+        onBeforeRebindTableMaterialPlantLgort: function (oEvent) {
+            var mBindingParams = this.getDeafultFiltersAndBinding(oEvent, false);
+            var newFilter;
 
-            var newFilter = new sap.ui.model.Filter("Material", sap.ui.model.FilterOperator.EQ, this._oObjectPressed.Product);
-            mBindingParams.filters.push(newFilter);
+            var oSmartFilterBarFilters = this.oSmartFilterBar.getFilters();
+            var aSTFilters = this.getFiltersArrayFromOFilter(oSmartFilterBarFilters);
 
-            newFilter = new sap.ui.model.Filter("Plant", sap.ui.model.FilterOperator.EQ, this._oObjectPressed.Plant);
-            mBindingParams.filters.push(newFilter);
+            aSTFilters.forEach(stFilter => {
+                let path = stFilter.getPath();
+                if (path == "DepositoFilter") {
+                    newFilter = new sap.ui.model.Filter("Lgort", stFilter.getOperator(), stFilter.getValue1(), stFilter.getValue2());
+                    mBindingParams.filters.push(newFilter);
+                }
+            });
         },
 
         onBeforeRebindTableMaterialPlantDocs: function (oEvent) {
-            var mBindingParams = oEvent.getParameter("bindingParams");
-
-            var newFilter = new sap.ui.model.Filter("Material", sap.ui.model.FilterOperator.EQ, this._oObjectPressed.Product);
-            mBindingParams.filters.push(newFilter);
-
-            newFilter = new sap.ui.model.Filter("Plant", sap.ui.model.FilterOperator.EQ, this._oObjectPressed.Plant);
-            mBindingParams.filters.push(newFilter);
+            var mBindingParams = this.getDeafultFiltersAndBinding(oEvent, false);
+            var newFilter;
 
             var oSmartFilterBarFilters = this.oSmartFilterBar.getFilters();
             var aSTFilters = this.getFiltersArrayFromOFilter(oSmartFilterBarFilters);
@@ -305,6 +317,10 @@ sap.ui.define([
                 }
                 else if (path == "PepFilter") {
                     newFilter = new sap.ui.model.Filter("Pep", stFilter.getOperator(), stFilter.getValue1(), stFilter.getValue2());
+                    mBindingParams.filters.push(newFilter);
+                }
+                else if (path == "DepositoFilter") {
+                    newFilter = new sap.ui.model.Filter("Deposito", stFilter.getOperator(), stFilter.getValue1(), stFilter.getValue2());
                     mBindingParams.filters.push(newFilter);
                 }
             });
