@@ -262,7 +262,7 @@ sap.ui.define([
             this._dialogDetail = null;
         },
 
-        getDeafultFiltersAndBinding: function (oEvent, needStorageFilter){
+        getDeafultFiltersAndBinding: function (oEvent, needStorageFilter) {
             var mBindingParams = oEvent.getParameter("bindingParams");
 
             var newFilter = new sap.ui.model.Filter("Material", sap.ui.model.FilterOperator.EQ, this._oObjectPressed.Product);
@@ -398,15 +398,15 @@ sap.ui.define([
 
             var mExportSettings = oEvent.getParameter("exportSettings");
 
-           /*  var aItems = this.oSmartTable.getTable().getBinding("rows").getContexts().map(function (oContext) {
+            var aItems = this.oSmartTable.getTable().getBinding("rows").getContexts().map(function (oContext) {
                 return oContext.getObject();
-            }); */
+            });
 
             /*Formata os valores para o padr�o BRL*/
-           /*  var numberFormatter = new Intl.NumberFormat("pt-BR", {
-                minimumFractionDigits: 3,
-                maximumFractionDigits: 3,
-            }); */
+            /*  var numberFormatter = new Intl.NumberFormat("pt-BR", {
+                 minimumFractionDigits: 3,
+                 maximumFractionDigits: 3,
+             }); */
 
             /*Formata com as unidades de medida*/
             /* aItems.forEach(function (item) {
@@ -421,10 +421,10 @@ sap.ui.define([
             }); */
 
             /*Passa os dados formatados para o template*/
-            /*             mExportSettings.dataSource = {
-                            type: "array",
-                            data: aItems
-                        }; */
+            mExportSettings.dataSource = {
+                type: "array",
+                data: aItems
+            };
 
             mExportSettings.workbook.columns.forEach(function (column) {
 
