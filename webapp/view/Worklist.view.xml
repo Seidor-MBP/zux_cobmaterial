@@ -50,6 +50,21 @@
                             type="Transparent" icon="sap-icon://request"
                             press="onHandlePressTableAction" />
 
+						<MenuButton id="MenuButtonExJob" text="{i18n>button_exceljob}"
+							type="Transparent"
+							icon="sap-icon://excel-attachment">
+							<menu>
+								<Menu id="Menu">
+									<MenuItem id="idMenuButtonExJobStart" text="{i18n>button_excelstartjob}"
+										icon="sap-icon://begin" press="onExJobStart" />
+									<MenuItem id="idMenuButtonExJobCheck" text="{i18n>button_excelcheckjob}"
+										icon="sap-icon://survey" press="onExJobCheck" />
+									<MenuItem id="idMenuButtonExJobGet" text="{i18n>button_excelgetdata}"
+										icon="sap-icon://excel-attachment" press="onExJobGet" />
+								</Menu>
+							</menu>
+						</MenuButton>
+
                     </OverflowToolbar>
                 </smartTable:customToolbar>
 

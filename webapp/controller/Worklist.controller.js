@@ -8,8 +8,10 @@ sap.ui.define([
     "sap/m/MessageToast",
     "sap/m/MessageBox",
     "sap/ui/core/Fragment",
+    "sap/ui/export/library",
+    "sap/ui/export/Spreadsheet",
     "sap/suite/ui/commons/statusindicator/PropertyThreshold"
-], function (BaseController, JSONModel, formatter, Filter, FilterOperator, BusyIndicator, MessageToast, MessageBox, Fragment) {
+], function (BaseController, JSONModel, formatter, Filter, FilterOperator, BusyIndicator, MessageToast, MessageBox, Fragment, exportLibrary, Spreadsheet) {
     "use strict";
 
     return BaseController.extend("com.mbp.zuxcobmaterial.controller.Worklist", {
@@ -166,16 +168,8 @@ sap.ui.define([
 
         },
 
-        onBeforeRebindTable: function (oEvent) {
-            /*var oSmartTable = oEvent.getSource();
-            var oSmartFilterBar = this.byId(oSmartTable.getSmartFilterId());
-            var vAno = oSmartFilterBar.getModel("fi1t3rM0d31").getProperty("/$Parameter.S_Year");
-            oSmartTable.setTableBindingPath("/ZC_COB_MATERIAL('" + vAno + "')/Set");*/
+        getSearchTableFilters: function (filters) {
 
-            //var oTable = oEvent.getSource().getTable();
-            //oTable.attachBusyStateChanged(this._onOptimizeSmartTableColumn);
-
-            var mBindingParams = oEvent.getParameter("bindingParams");
             var sSelectedNoMov = this.byId("ID_FILTER_NO_NULL_MOVIMENT").getSelected();
             var oFilters = [];
 
@@ -209,8 +203,15 @@ sap.ui.define([
             }
 
             if (oFilters.length > 0) {
-                mBindingParams.filters.push(new sap.ui.model.Filter({ filters: oFilters, and: true }));
+                filters.push(new sap.ui.model.Filter({ filters: oFilters, and: true }));
             }
+
+            return filters;
+        },
+
+        onBeforeRebindTable: function (oEvent) {
+            var mBindingParams = oEvent.getParameter("bindingParams");
+            mBindingParams.filters = this.getSearchTableFilters(mBindingParams.filters);
         },
 
         onLinkPressed: function (oEvent) {
@@ -392,15 +393,120 @@ sap.ui.define([
             });
         },
 
+        onExJobStart: function (oEvent) {
+
+            let mSmartFilterBarFilters = this.oSmartFilterBar.getFilters();
+            let filters = this.getSearchTableFilters(mSmartFilterBarFilters);
+            let filtersArr = this.getFiltersArrayFromOFilter(filters);
+
+            this.oSapModel.read("/ExportExcelStartJob", {
+                filters: filtersArr,
+                success: function (oData) {
+                    MessageBox.success(this.getResourceBundle().getText("msgSuccessJobStarted"),
+                        { styleClass: this.getOwnerComponent().getContentDensityClass() }, this);
+                }.bind(this),
+                error: function (oError) {
+                    MessageBox.error(this.getResourceBundle().getText("msgErrorJobStarted"),
+                        { styleClass: this.getOwnerComponent().getContentDensityClass() }, this);
+                }.bind(this),
+            });
+
+
+        },
+
+        onExJobCheck: function (oEvent) {
+
+            this.oSapModel.read("/ExportExcelJobCheckSet", {
+                success: function (oData) {
+                    if (oData.results[0]) {
+                        switch (oData.results[0].JobStatus) {
+                            case "R":
+                                MessageBox.success(this.getResourceBundle().getText("msgSuccessJobCheckRunning"),
+                                    { styleClass: this.getOwnerComponent().getContentDensityClass() }, this);
+                                break;
+                            default:
+                                MessageBox.success(this.getResourceBundle().getText("msgSuccessJobCheckNoJob"),
+                                    { styleClass: this.getOwnerComponent().getContentDensityClass() }, this);
+                                break;
+                        }
+                    } else {
+                        MessageBox.success(this.getResourceBundle().getText("msgSuccessJobCheckNoJob"),
+                            { styleClass: this.getOwnerComponent().getContentDensityClass() }, this);
+                    }
+                }.bind(this),
+                error: function (oError) {
+                    MessageBox.error(this.getResourceBundle().getText("msgErrorJobCheck"),
+                        { styleClass: this.getOwnerComponent().getContentDensityClass() }, this);
+                }.bind(this),
+            });
+
+
+        },
+
+        onExJobGet: function (oEvent) {
+
+            this.oSapModel.read("/ExportExcelDataSet", {
+                success: function (oData) {
+
+                    if (oData.results.length <= 0) {
+                        MessageBox.warning(this.getResourceBundle().getText("msgWarningJobGetNoData"),
+                            { styleClass: this.getOwnerComponent().getContentDensityClass() }, this);
+                        return;
+                    }
+
+                    let resultData = oData.results.map(item => {
+                        delete item.__metadata;
+                        return item;
+                    });
+
+                    this.genereteExcel(resultData);
+
+                }.bind(this),
+                error: function (oError) {
+                    MessageBox.error(this.getResourceBundle().getText("msgErrorJobGet"),
+                        { styleClass: this.getOwnerComponent().getContentDensityClass() }, this);
+                }.bind(this),
+            });
+
+
+        },
+
+        genereteExcel: function (itensData) {
+
+            let oTable = this.oSmartTable.getTable();
+            let cols = oTable.getColumns().map((tableCol) => {
+                return {
+                    label: tableCol.getLabel().getText(),
+                    property: tableCol.getCustomData()[0].getValue().leadingProperty,
+                    //type: EdmType.Number,
+                    scale: 0
+                };
+            });
+            let aCols = this.exportColumnFormat(cols);
+            const oSettings = {
+                workbook: { columns: aCols },
+                dataSource: itensData
+            };
+            const oSheet = new Spreadsheet(oSettings);
+
+            oSheet.build()
+                .then(function () {
+                    MessageToast.show(this.getResourceBundle().getText("msgFileGenerated"));
+                }).finally(function () {
+                    oSheet.destroy();
+                });
+
+        },
+
         onBeforeExport: function (oEvent) {
 
             /*MM:WSJ - Nescess�rio sobrescrever o metodo onBeforeExport para pegar os dados dos campos que s�o link no frontend*/
 
             var mExportSettings = oEvent.getParameter("exportSettings");
 
-            var aItems = this.oSmartTable.getTable().getBinding("rows").getContexts().map(function (oContext) {
-                return oContext.getObject();
-            });
+            //var aItems = this.oSmartTable.getTable().getBinding("rows").getContexts().map(function (oContext) {
+            //    return oContext.getObject();
+            //});
 
             /*Formata os valores para o padr�o BRL*/
             /*  var numberFormatter = new Intl.NumberFormat("pt-BR", {
@@ -421,12 +527,16 @@ sap.ui.define([
             }); */
 
             /*Passa os dados formatados para o template*/
-            mExportSettings.dataSource = {
-                type: "array",
-                data: aItems
-            };
+            //mExportSettings.dataSource = {
+            //    type: "array",
+            //    data: aItems
+            //};
 
-            mExportSettings.workbook.columns.forEach(function (column) {
+            mExportSettings.workbook.columns = this.exportColumnFormat(mExportSettings.workbook.columns);
+        },
+
+        exportColumnFormat: function (columns) {
+            columns.forEach(function (column) {
 
                 /*Formatamos as colunas com seus respectivos nomes para garantir que os dados sejam encontrados*/
                 switch (column.property) {
@@ -544,6 +654,7 @@ sap.ui.define([
 
 
             });
+            return columns;
         },
 
         onMessagePopoverPress: function (oEvent) {
